@@ -1,13 +1,49 @@
-import { Link } from '@remix-run/react';
+import type { ActionFunctionArgs } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
+import { Form, Link, useActionData, useNavigation } from '@remix-run/react';
 import AuthHeader from '~/components/auth/auth-header';
 import AuthImage from '~/components/auth/auth-image';
+import Banner from '~/components/banner';
+import { API_URL } from '~/utils/constants';
 
 export const metadata = {
   title: 'Log In - School Board',
   description: 'Page description',
 };
 
+export async function action({ request }: ActionFunctionArgs) {
+  try {
+    const body = await request.formData();
+    const username = body.get('cid');
+    const password = body.get('password');
+    const res = await fetch(`${API_URL}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    if (!res.ok) {
+      return json({ error: true });
+    }
+    return redirect('/dashboard', {
+      headers: {
+        'Set-Cookie': res.headers.get('Set-Cookie') ?? '',
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
 export default function SignIn() {
+  const navigation = useNavigation();
+  const actionData = useActionData<typeof action>();
+
+  const isSubmitting = navigation.state !== 'idle';
+
   return (
     <main className="bg-white dark:bg-slate-900">
       <div className="relative md:flex">
@@ -17,70 +53,73 @@ export default function SignIn() {
             <AuthHeader />
 
             <div className="max-w-sm mx-auto w-full px-4 py-8">
+              {/* error banner */}
+
               <h1 className="text-3xl text-slate-800 dark:text-slate-100 font-bold mb-6">
-                Welcome back! ✨
+                Bienvenido de Vuelta! ✨
               </h1>
+
               {/* Form */}
-              <form method="post">
-                <div className="space-y-4">
-                  <div>
-                    <label
-                      className="block text-sm font-medium mb-1 dark:text-slate-100"
-                      htmlFor="email"
-                    >
-                      Cedula
-                    </label>
-                    <input
-                      id="cid"
-                      name="cid"
-                      className="form-input w-full"
-                      type="text"
-                    />
+              <Form method="post" action="/auth/login">
+                <fieldset disabled={isSubmitting}>
+                  <div className="space-y-4">
+                    <div>
+                      <label
+                        className="block text-sm font-medium mb-1 text-black dark:text-slate-100"
+                        htmlFor="email"
+                      >
+                        Cedula
+                      </label>
+                      <input
+                        id="cid"
+                        name="cid"
+                        className="form-input w-full"
+                        type="text"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        className="block text-sm font-medium mb-1 text-black dark:text-slate-100"
+                        htmlFor="password"
+                      >
+                        Contraseña
+                      </label>
+                      <input
+                        id="password"
+                        name="password"
+                        className="form-input w-full"
+                        type="password"
+                        autoComplete="on"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label
-                      className="block text-sm font-medium mb-1 dark:text-slate-100"
-                      htmlFor="password"
+                  <div className="flex items-center justify-between mt-6 ">
+                    <div className="mr-1">
+                      <Link
+                        className="text-sm underline hover:no-underline dark:text-slate-100"
+                        to="/reset-password"
+                      >
+                        Olvidaste tu contraseña?
+                      </Link>
+                    </div>
+                    <button
+                      className="btn bg-indigo-500 hover:bg-indigo-600 text-white ml-3 "
+                      type="submit"
+                      disabled={isSubmitting}
                     >
-                      Contraseña
-                    </label>
-                    <input
-                      id="password"
-                      name="password"
-                      className="form-input w-full"
-                      type="password"
-                      autoComplete="on"
-                    />
+                      {isSubmitting ? 'Iniciando...' : 'Iniciar Sesión'}
+                    </button>
                   </div>
-                </div>
-                <div className="flex items-center justify-between mt-6 ">
-                  <div className="mr-1">
-                    <Link
-                      className="text-sm underline hover:no-underline dark:text-slate-100"
-                      to="/reset-password"
-                    >
-                      Olvidaste tu contraseña?
-                    </Link>
-                  </div>
-                  <button
-                    className="btn bg-indigo-500 hover:bg-indigo-600 text-white ml-3 "
-                    type="submit"
-                  >
-                    Sign In
-                  </button>
-                </div>
-              </form>
+                </fieldset>
+              </Form>
               {/* Footer */}
+
               <div className="pt-5 mt-6 border-t border-slate-200 dark:border-slate-700">
-                <div className="text-sm dark:text-slate-100">
-                  Don't you have an account?{' '}
-                  <Link
-                    className="font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400"
-                    to="/signup"
-                  >
-                    Sign Up
-                  </Link>
-                </div>
+                {actionData?.error && (
+                  <Banner type="error" open={true}>
+                    Cedula o Contraseña Incorrecta
+                  </Banner>
+                )}
                 {/* Warning */}
                 <div className="mt-5">
                   <div className="bg-amber-100 dark:bg-amber-400/30 text-amber-600 dark:text-amber-400 px-3 py-2 rounded">

@@ -6,3 +6,8 @@
 @import 'tailwindcss/utilities';
 
 
+@layer base {
+    body {
+        @apply text-black dark:text-slate-100
+    }
+}
