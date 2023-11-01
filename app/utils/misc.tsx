@@ -10,10 +10,12 @@ function getRequiredEnvVarFromObj(
   } else if (obj.NODE_ENV === 'production') {
     throw new Error(`${key} is a required env variable`);
   }
+  console.log(`value`, value);
   return value;
 }
 
 function getRequiredServerEnvVar(key: string, devValue?: string) {
+  console.log('process', process.env.SESSION_SECRET);
   return getRequiredEnvVarFromObj(process.env, key, devValue);
 }
 
