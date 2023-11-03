@@ -1,5 +1,5 @@
 import stylesheet from '~/css/tailwind.css';
-import type { LinksFunction, LoaderFunction } from '@remix-run/node';
+import { type LinksFunction, type LoaderFunction } from '@remix-run/node';
 import {
   Links,
   LiveReload,
@@ -42,7 +42,7 @@ function App() {
         <Links />
         <NonFlashOfWrongThemeEls ssrTheme={Boolean(data.theme)} />
       </head>
-      <body>
+      <body className="antialiased bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400">
         <Outlet />
         <ScrollRestoration />
         <Scripts />

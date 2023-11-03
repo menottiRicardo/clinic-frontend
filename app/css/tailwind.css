@@ -5,9 +5,12 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-
 @layer base {
-    body {
-        @apply text-black dark:text-slate-100
-    }
+  body {
+    @apply text-black dark:text-slate-100;
+  }
+
+  main {
+    @apply text-black dark:text-slate-100;
+  }
 }
