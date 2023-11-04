@@ -4,6 +4,7 @@ import { Outlet, useLoaderData } from '@remix-run/react';
 import Header from '~/components/header';
 import Sidebar from '~/components/sidebar';
 import { getUserSidebar } from '~/utils/api';
+import AppProvider from '~/utils/app-provider';
 import type { UserSidebarLink } from '~/utils/types';
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -20,20 +21,22 @@ function Dashboard() {
   const sidebarLinks = useLoaderData<UserSidebarLink[]>();
 
   return (
-    <div className="flex h-[100dvh] overflow-hidden">
-      {/* Sidebar */}
+    <AppProvider>
+      <div className="flex h-[100dvh] overflow-hidden">
+        {/* Sidebar */}
 
-      <Sidebar sidebarLinks={sidebarLinks} />
-      {/* Content area */}
-      <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-        {/*  Site header */}
-        <Header />
+        <Sidebar sidebarLinks={sidebarLinks} />
+        {/* Content area */}
+        <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+          {/*  Site header */}
+          <Header />
 
-        <main className="grow [&>*:first-child]:scroll-mt-16">
-          <Outlet />
-        </main>
+          <main className="grow [&>*:first-child]:scroll-mt-16">
+            <Outlet />
+          </main>
+        </div>
       </div>
-    </div>
+    </AppProvider>
   );
 }
 

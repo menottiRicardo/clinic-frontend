@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useRef, useState } from 'react';
 import { Transition } from '@headlessui/react';
 import { getBreakpoint } from '../utils';
@@ -8,6 +6,7 @@ import SidebarLink from './sidebar-link';
 import Logo from './logo';
 import { icons } from 'lucide-react';
 import type { UserSidebarLink } from '~/utils/types';
+import { useAppProvider } from '~/utils/app-provider';
 
 export default function Sidebar({
   sidebarLinks,
@@ -15,8 +14,7 @@ export default function Sidebar({
   sidebarLinks: UserSidebarLink[];
 }) {
   const sidebar = useRef<HTMLDivElement>(null);
-  // const { sidebarOpen, setSidebarOpen } = useAppProvider();
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
+  const { sidebarOpen, setSidebarOpen } = useAppProvider()
   const [sidebarExpanded, setSidebarExpanded] = useState<boolean>(false);
   const segments: any = [];
   const [breakpoint, setBreakpoint] = useState<string | undefined>(
@@ -105,7 +103,7 @@ export default function Sidebar({
                     <ul className={`pl-9 mt-1 ${!open && 'hidden'}`}>
                       {link.subMenu.map((subLink: any) => (
                         <li className="mb-1 last:mb-0" key={subLink.href}>
-                          <SidebarLink href={`/${subLink.href}`}>
+                          <SidebarLink href={`${subLink.href}`}>
                             <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                               {subLink.name}
                             </span>
@@ -128,7 +126,7 @@ export default function Sidebar({
         }`}
         key={link.href}
       >
-        <SidebarLink href={`/${link.href}`}>
+        <SidebarLink href={`${link.href}`}>
           <div className="flex items-center">
             <div className="shrink-0 h-6 w-6"><LucideIcon /></div>
             <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">

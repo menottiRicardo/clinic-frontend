@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 
 import ThemeToggle from './theme-toggle';
@@ -7,10 +5,10 @@ import DropdownNotifications from './dropdown-notifications';
 import DropdownProfile from './dropdown-profile';
 import DropdownHelp from './dropdown-help';
 import SearchModal from './search-modal';
+import { useAppProvider } from '~/utils/app-provider';
 
 export default function Header() {
-  // const { sidebarOpen, setSidebarOpen } = useAppProvider()
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+  const { sidebarOpen, setSidebarOpen } = useAppProvider()
   const [searchModalOpen, setSearchModalOpen] = useState<boolean>(false);
 
   return (
