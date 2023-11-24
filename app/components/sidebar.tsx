@@ -59,8 +59,7 @@ export default function Sidebar({
     // @ts-ignore
     const LucideIcon = icons[link.icon];
 
-    if (link.subMenu) {
-      console.log(link.subMenu);
+    if (link?.subMenu) {
       return (
         <SidebarLinkGroup open={segments.includes('notas')} key={link.href}>
           {(handleClick, open) => {
