@@ -4,7 +4,7 @@ import { Form, Link, useActionData, useNavigation } from '@remix-run/react';
 import AuthHeader from '~/components/auth/auth-header';
 import AuthImage from '~/components/auth/auth-image';
 import Banner from '~/components/banner';
-import { API_URL } from '~/utils/constants';
+import { AUTH_API_URL } from '~/utils/constants';
 
 export const metadata = {
   title: 'Log In - School Board',
@@ -16,7 +16,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const body = await request.formData();
     const username = body.get('cid');
     const password = body.get('password');
-    const res = await fetch(`${API_URL}/auth/login`, {
+    const res = await fetch(`${AUTH_API_URL}/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -25,11 +25,14 @@ export async function action({ request }: ActionFunctionArgs) {
     });
 
     if (!res.ok) {
+      console.log('bad', res);
       return json({ error: true });
     }
+    const data = await res.json();
+    console.log('data', data);
     return redirect('/dashboard', {
       headers: {
-        'Set-Cookie': res.headers.get('Set-Cookie') ?? '',
+        'Set-Cookie': `access_token=${data.access_token}; Max-Age=3600; HttpOnly; Path=/; Secure; SameSite=Lax`,
       },
     });
   } catch (error) {

@@ -1,8 +1,8 @@
-import { API_URL } from './constants';
+import { AUTH_API_URL } from './constants';
 
 export const getUserSidebar = async (request: Request) => {
   try {
-    const res = await fetch(`${API_URL}/users/sidebar`, {
+    const res = await fetch(`${AUTH_API_URL}/users/sidebar`, {
       headers: {
         'Content-Type': 'application/json',
         Cookie: request.headers.get('Cookie') || '',

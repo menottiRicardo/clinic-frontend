@@ -1,1 +1,1 @@
-export const API_URL = process.env.API_URL
+export const AUTH_API_URL = process.env.AUTH_API_URL

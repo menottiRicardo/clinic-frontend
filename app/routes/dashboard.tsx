@@ -1,40 +1,24 @@
-import { Outlet } from '@remix-run/react';
+import type { LoaderFunction} from '@remix-run/node';
+import { redirect } from '@remix-run/node';
+import { Outlet, useLoaderData } from '@remix-run/react';
 import Header from '~/components/header';
 import Sidebar from '~/components/sidebar';
+import { getUserSidebar } from '~/utils/api';
 import AppProvider from '~/utils/app-provider';
 import type { UserSidebarLink } from '~/utils/types';
 
-// export const loader: LoaderFunction = async ({ request }) => {
-//   const sidebar = await getUserSidebar(request);
+export const loader: LoaderFunction = async ({ request }) => {
+  const sidebar = await getUserSidebar(request);
 
-//   if (!sidebar) {
-//     console.log('redirecting to login', sidebar);
-//     return redirect('/auth/login');
-//   }
+  if (!sidebar) {
+    console.log('redirecting to login', sidebar);
+    return redirect('/auth/login');
+  }
 
-//   return sidebar;
-// };
+  return sidebar;
+};
 function Dashboard() {
-  // const sidebarLinks = useLoaderData<UserSidebarLink[]>();
-
-  const sidebarLinks: UserSidebarLink[] = [
-    {
-      name: 'Dashboard',
-      icon: 'Home',
-      href: '/dashboard',
-    },
-    {
-      name: 'Citas',
-      icon: 'Calendar',
-      href: '/dashboard/appt',
-      subMenu: [
-        {
-          name: 'Eventos',
-          href: '/dashboard/appt/events',
-        },
-      ],
-    },
-  ];
+  const sidebarLinks = useLoaderData<UserSidebarLink[]>();
 
   return (
     <AppProvider>
