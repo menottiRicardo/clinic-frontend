@@ -6,14 +6,14 @@ import { ExternalLink, Link2, Trash2 } from 'lucide-react';
 interface EventCardProps extends Event {
   hidden?: boolean;
 }
-const EventCard = ({ id, title, visibility, description }: EventCardProps) => {
+const EventCard = ({ _id, title, visibility, description }: EventCardProps) => {
   return (
     <div
       className={`shadow-lg w-full rounded-md border px-5 py-4 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700`}
     >
       <div className="md:flex justify-between items-center space-y-4 md:space-y-0 space-x-2">
         {/* Left side */}
-        <Link to={`${id}`} className="cursor-pointer">
+        <Link to={`${_id}`} className="cursor-pointer">
           <div className="flex items-start space-x-3 md:space-x-4">
             <div>
               <div className="inline-flex font-semibold text-slate-800 dark:text-slate-100">
@@ -29,7 +29,7 @@ const EventCard = ({ id, title, visibility, description }: EventCardProps) => {
             <div className="text-sm subtitle italic">No visible</div>
           )}
 
-          <ToggleSwitch checked={visibility as boolean} id={id} />
+          <ToggleSwitch checked={visibility as boolean} id={_id} />
           <div className="grid grid-cols-3 divide-x border border-slate-600 divide-slate-600 rounded-lg">
             <Link
               to="ready"

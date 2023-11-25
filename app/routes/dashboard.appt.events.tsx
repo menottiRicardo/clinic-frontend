@@ -1,10 +1,11 @@
-import { Link, Outlet } from '@remix-run/react';
+import type { LoaderFunction } from '@remix-run/node';
+import { Link, Outlet, useLoaderData } from '@remix-run/react';
 import React from 'react';
 import EventCard from '~/components/appt/event-card';
-import { changeVisibility } from '~/utils/api.server';
+import { changeVisibility, getDoctorEvents } from '~/utils/api.server';
+import type { Event } from '~/utils/types';
 
 export async function action({ request }: { request: Request }) {
-  console.log('here');
   const formData = await request.formData();
   let { _action, ...values } = Object.fromEntries(formData);
 
@@ -18,7 +19,12 @@ export async function action({ request }: { request: Request }) {
   console.log({ _action, values });
 }
 
+export const loader: LoaderFunction = async ({ request }) => {
+  return await getDoctorEvents(request);
+};
+
 const Appt = () => {
+  const events: Event[] = useLoaderData();
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
       <Outlet />
@@ -52,11 +58,15 @@ const Appt = () => {
         </div>
       </div>
 
-      <EventCard
-        title="Consulta medica para qwerja"
-        description="estea es una pureba"
-        id="id"
-      />
+      <div className='space-y-1'>
+        {events.map((event) => (
+          <EventCard
+            title={event.title}
+            description={event.description}
+            id={event._id}
+          />
+        ))}
+      </div>
     </div>
   );
 };

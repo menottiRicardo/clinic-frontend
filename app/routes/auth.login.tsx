@@ -29,7 +29,6 @@ export async function action({ request }: ActionFunctionArgs) {
       return json({ error: true });
     }
     const data = await res.json();
-    console.log('data', data);
     return redirect('/dashboard', {
       headers: {
         'Set-Cookie': `access_token=${data.access_token}; Max-Age=3600; HttpOnly; Path=/; Secure; SameSite=Lax`,
