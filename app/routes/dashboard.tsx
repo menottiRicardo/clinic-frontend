@@ -3,7 +3,7 @@ import { redirect } from '@remix-run/node';
 import { Outlet, useLoaderData } from '@remix-run/react';
 import Header from '~/components/header';
 import Sidebar from '~/components/sidebar';
-import { getUserSidebar } from '~/utils/api';
+import { getUserSidebar } from '~/utils/api.server';
 import AppProvider from '~/utils/app-provider';
 import type { UserSidebarLink } from '~/utils/types';
 

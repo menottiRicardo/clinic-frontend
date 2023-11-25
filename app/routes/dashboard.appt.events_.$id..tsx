@@ -1,37 +1,15 @@
-import { Link, Outlet } from '@remix-run/react';
-import React from 'react';
-import EventCard from '~/components/appt/event-card';
-import { changeVisibility } from '~/utils/api.server';
-
-export async function action({ request }: { request: Request }) {
-  console.log('here');
-  const formData = await request.formData();
-  let { _action, ...values } = Object.fromEntries(formData);
-
-  switch (_action) {
-    case 'visibility':
-      return changeVisibility(request, values.id, values.checked);
-
-    default:
-      break;
-  }
-  console.log({ _action, values });
-}
+import { Link } from '@remix-run/react';
 
 const Appt = () => {
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
-      <Outlet />
       {/* Page header */}
       <div className="sm:flex sm:justify-between sm:items-center mb-4">
         {/* Left: Title */}
         <div className="mb-4 sm:mb-0">
           <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold">
-            Eventos
+            id
           </h1>
-          <p className="text-slate-500 dark:text-slate-400">
-            Crea eventos para que los pacientes puedan agendar citas contigo.
-          </p>
         </div>
 
         {/* Right: Actions */}
@@ -51,12 +29,6 @@ const Appt = () => {
           </Link>
         </div>
       </div>
-
-      <EventCard
-        title="Consulta medica para qwerja"
-        description="estea es una pureba"
-        id="id"
-      />
     </div>
   );
 };

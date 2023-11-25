@@ -14,3 +14,9 @@
     @apply text-black dark:text-slate-100;
   }
 }
+
+@layer components {
+  .subtitle {
+    @apply text-slate-500 dark:text-slate-400;
+  }
+}
