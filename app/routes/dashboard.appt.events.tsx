@@ -2,22 +2,22 @@ import type { LoaderFunction } from '@remix-run/node';
 import { Link, Outlet, useLoaderData } from '@remix-run/react';
 import React from 'react';
 import EventCard from '~/components/appt/event-card';
-import { changeVisibility, getDoctorEvents } from '~/utils/api.server';
+import { getDoctorEvents } from '~/utils/api.server';
 import type { Event } from '~/utils/types';
 
-export async function action({ request }: { request: Request }) {
-  const formData = await request.formData();
-  let { _action, ...values } = Object.fromEntries(formData);
+// export async function action({ request }: { request: Request }) {
+//   const formData = await request.formData();
+//   let { _action, ...values } = Object.fromEntries(formData);
 
-  switch (_action) {
-    case 'visibility':
-      return changeVisibility(request, values.id, values.checked);
+//   switch (_action) {
+//     case 'visibility':
+//       return changeVisibility(request, values.id, values.checked);
 
-    default:
-      break;
-  }
-  console.log({ _action, values });
-}
+//     default:
+//       break;
+//   }
+//   console.log({ _action, values });
+// }
 
 export const loader: LoaderFunction = async ({ request }) => {
   return await getDoctorEvents(request);
@@ -25,6 +25,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 const Appt = () => {
   const events: Event[] = useLoaderData();
+  console.log({ events });
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
       <Outlet />
@@ -58,14 +59,22 @@ const Appt = () => {
         </div>
       </div>
 
-      <div className='space-y-1'>
-        {events.map((event) => (
-          <EventCard
-            title={event.title}
-            description={event.description}
-            id={event._id}
-          />
-        ))}
+      <div className="space-y-1">
+        {events.length > 0 ? (
+          events.map((event) => (
+            <EventCard
+              key={event._id}
+              title={event.title}
+              description={event.description}
+              duration={event.duration}
+              _id={event._id}
+            />
+          ))
+        ) : (
+          <div className="text-center text-sm text-slate-500 dark:text-slate-400 mt-10">
+            No hay eventos registrados
+          </div>
+        )}
       </div>
     </div>
   );

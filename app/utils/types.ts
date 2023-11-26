@@ -10,5 +10,5 @@ export interface Event {
   title: string;
   description: string;
   href?: string;
-  visibility?: boolean;
+  duration: boolean;
 }
