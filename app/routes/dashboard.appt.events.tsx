@@ -5,20 +5,6 @@ import EventCard from '~/components/appt/event-card';
 import { getDoctorEvents } from '~/utils/api.server';
 import type { Event } from '~/utils/types';
 
-// export async function action({ request }: { request: Request }) {
-//   const formData = await request.formData();
-//   let { _action, ...values } = Object.fromEntries(formData);
-
-//   switch (_action) {
-//     case 'visibility':
-//       return changeVisibility(request, values.id, values.checked);
-
-//     default:
-//       break;
-//   }
-//   console.log({ _action, values });
-// }
-
 export const loader: LoaderFunction = async ({ request }) => {
   return await getDoctorEvents(request);
 };

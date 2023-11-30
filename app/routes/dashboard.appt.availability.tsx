@@ -27,7 +27,7 @@ export async function action({ request }: { request: Request }) {
         'Content-Type': 'application/json',
         Cookie: request.headers.get('Cookie') || '',
       },
-      method: 'POST',
+      method: 'PATCH',
       body: JSON.stringify(data),
     });
     if (!res.ok) {
