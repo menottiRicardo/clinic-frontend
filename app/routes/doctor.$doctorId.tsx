@@ -2,12 +2,19 @@ import type { LoaderFunction } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClockIcon, UserCircleIcon } from 'lucide-react';
 import { APPT_API_URL } from '~/utils/constants';
-import type { Event } from '~/utils/types';
+import { NUMBER_TO_DAY } from '~/utils/types';
+import type {
+  Availability,
+  DayKey,
+  Event as EventType,
+  NUMBER_TO_DAY_KEY,
+} from '~/utils/types';
 import classNames from 'classnames';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import DatePicker from '~/components/date-picker';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
+import { to24Hour } from '~/utils/weekday';
 export const loader: LoaderFunction = async ({ request, params }) => {
   const doctorId = params.doctorId;
   try {
@@ -32,12 +39,62 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   }
 };
 
+type LoaderData = {
+  events: EventType[];
+  doctor: {
+    name: string;
+    clinic: {
+      name: string;
+    };
+  };
+  daysOff: number[];
+  availability: Availability;
+};
+
 const DoctorSchedule = () => {
-  const { events, doctor, daysOff } = useLoaderData();
-  const [selectedEvent, setSelectedEvent] = useState('');
+  const { events, doctor, daysOff, availability } = useLoaderData<LoaderData>();
+  const [selectedEvent, setSelectedEvent] = useState<EventType | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>();
   const [month, setMonth] = useState<string | null>();
-  console.log({ events, doctor, daysOff });
+  //   console.log({ events, doctor, daysOff, availability });
+
+  const times = useMemo(() => {
+    if (!selectedEvent) return [];
+    const duration = selectedEvent.duration;
+    const times = [];
+
+    // handle availability
+    let date = dayjs(selectedDate);
+    const currentDayNumber = date.day();
+    const currentDayLetter =
+      NUMBER_TO_DAY[currentDayNumber as NUMBER_TO_DAY_KEY];
+    const dayAvailability = availability[currentDayLetter as DayKey];
+
+    const start = date
+      .hour(parseInt(to24Hour(dayAvailability.hours[0].start)))
+      .minute(0);
+    const end = date
+      .hour(
+        parseInt(
+          to24Hour(
+            dayAvailability.hours[dayAvailability.hours.length === 1 ? 0 : 1]
+              .end
+          )
+        )
+      )
+      .minute(0);
+    // date = date.set('hour', parseInt(to24Hour(dayAvailability.hours[0].start)));
+
+    let time = start;
+    while (time.isBefore(end)) {
+      times.push(time.format('hh:mm A'));
+      time = time.add(parseInt(duration), 'minute');
+    }
+    console.log('day', start, end, times);
+
+    return times;
+  }, [selectedEvent, selectedDate]);
+
   return (
     <div className="w-full h-screen flex justify-center items-center">
       <div className="md:bg-white md:dark:bg-slate-700 p-3 rounded-md md:border md:border-slate-500 shadow-sm w-full md:w-3/5 h-full">
@@ -57,17 +114,17 @@ const DoctorSchedule = () => {
         {/* events */}
 
         <div className="max-h-72 overflow-y-scroll space-y-2 my-8">
-          {events.map((event: Event) => (
+          {events.map((event: EventType) => (
             <button
               key={event._id}
-              onClick={() => setSelectedEvent(event._id)}
+              onClick={() => setSelectedEvent(event)}
               className={classNames(
                 `shadow-lg w-full rounded-md border px-4 py-3 bg-white dark:bg-slate-800 transition-colors duration-200 ease-in-out cursor-auto`,
                 {
                   'bg-slate-100 dark:bg-slate-600 border-white dark:border-slate-100 shadow-md':
-                    selectedEvent === event._id,
+                    selectedEvent?._id === event._id,
                   'border-slate-200 dark:border-slate-700':
-                    selectedEvent !== event._id,
+                    selectedEvent?._id !== event._id,
                 }
               )}
             >
@@ -104,6 +161,9 @@ const DoctorSchedule = () => {
             daysOff={daysOff}
           />
         </div>
+
+        {/* times */}
+        <div className="max-h-72 overflow-y-scroll space-y-2 mt-8 pb-8"></div>
       </div>
     </div>
   );

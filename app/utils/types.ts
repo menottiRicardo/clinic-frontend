@@ -9,8 +9,8 @@ export interface Event {
   _id: string;
   title: string;
   description: string;
-  href?: string;
-  duration: boolean;
+  duration: string;
+  doctorId: string;
 }
 
 export interface Day {
@@ -33,3 +33,36 @@ export interface Availability extends Days {
 }
 
 export type DayKey = keyof Days;
+
+export const DAY_TO_NUMBER = {
+  sunday: 0,
+  monday: 1,
+  tuesday: 2,
+  wednesday: 3,
+  thursday: 4,
+  friday: 5,
+  saturday: 6,
+};
+
+export const NUMBER_TO_DAY: NumberToDay = {
+  0: 'sunday',
+  1: 'monday',
+  2: 'tuesday',
+  3: 'wednesday',
+  4: 'thursday',
+  5: 'friday',
+  6: 'saturday',
+};
+
+export interface NumberToDay {
+  0: 'sunday';
+  1: 'monday';
+  2: 'tuesday';
+  3: 'wednesday';
+  4: 'thursday';
+  5: 'friday';
+  6: 'saturday';
+}
+
+export type DAY_TO_NUMBER_KEY = keyof DAY_TO_NUMBER;
+export type NUMBER_TO_DAY_KEY = keyof NumberToDay;
