@@ -1,33 +1,27 @@
-import { useSubmit } from '@remix-run/react';
-
 const ToggleSwitch = ({
   checked,
   id,
   labels,
+  onChange,
 }: {
   checked: boolean;
   id: string;
   labels?: { on: string; off: string };
+  onChange?: (checked: boolean) => void;
 }) => {
-  const submit = useSubmit();
   return (
     <div className="flex items-center">
       <div className="form-switch">
         <input
           type="checkbox"
-          id="switch-1"
+          id={id}
           className="sr-only"
-          name="id"
-          checked={checked}
-          onChange={(e) => {
-            submit(
-              { checked: e.target.checked, _action: 'visibility', id },
-              { method: 'post' }
-            );
-          }}
+          name={id}
+          onChange={(e) => onChange?.(e.target.checked)}
+          defaultChecked={checked}
         />
 
-        <label className="bg-slate-400 dark:bg-slate-700" htmlFor="switch-1">
+        <label className="bg-slate-400 dark:bg-slate-700" htmlFor={id}>
           <span className="bg-white shadow-sm" aria-hidden="true"></span>
           <span className="sr-only">Switch label</span>
         </label>

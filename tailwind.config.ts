@@ -1,6 +1,6 @@
 import type { Config } from 'tailwindcss';
 import plugin from 'tailwindcss/plugin.js';
-// import forms from '@tailwindcss/forms/src/index.js';
+import forms from '@tailwindcss/forms/src/index.js';
 export default {
   content: ['./app/**/*.{js,jsx,ts,tsx}'],
   darkMode: 'class',
@@ -37,7 +37,7 @@ export default {
     },
   },
   plugins: [
-    // forms,
+    forms,
     plugin(({ addVariant, e }: any) => {
       addVariant('sidebar-expanded', ({ modifySelectors, separator }: any) => {
         modifySelectors(
