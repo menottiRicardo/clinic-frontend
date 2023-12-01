@@ -13,22 +13,30 @@ import { Fragment, useState } from 'react';
 import ToggleSwitch from '~/components/toggle-switch';
 import { Listbox, Transition } from '@headlessui/react';
 import { APPT_API_URL } from '~/utils/constants';
-import { getUserFromReq } from '~/utils/getUser';
 import type { Availability, DayKey, Days } from '~/utils/types';
+import { getSession } from '~/sessions';
 
 export async function action({ request }: { request: Request }) {
   const formData = await request.formData();
   const data = JSON.parse(formData.get('data') as string);
   try {
-    const user = getUserFromReq(request);
-    data.doctorId = user?.role !== 'DOCTOR' ? null : user.sub;
+    const session = await getSession(request.headers.get('Cookie'));
+    const token = session.get('accessToken');
+    const doctorId = session.get('userId');
+    const clinicId = session.get('clinicId');
+
+    console.log('data', data.tuesday.hours, data.tuesday);
     const res = await fetch(`${APPT_API_URL}/availability`, {
       headers: {
         'Content-Type': 'application/json',
-        Cookie: request.headers.get('Cookie') || '',
+        authorization: `Bearer ${token}`,
       },
       method: 'PATCH',
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        availability: data,
+        doctorId,
+        clinicId,
+      }),
     });
     if (!res.ok) {
       throw new Error(res.statusText);
@@ -42,25 +50,30 @@ export async function action({ request }: { request: Request }) {
 
 export const loader: LoaderFunction = async ({ request }) => {
   try {
-    const user = getUserFromReq(request);
-    const id = user?.role !== 'DOCTOR' ? null : user.sub;
-    const res = await fetch(`${APPT_API_URL}/availability/${id}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Cookie: request.headers.get('Cookie') || '',
-      },
-      method: 'GET',
-    });
+    const session = await getSession(request.headers.get('Cookie'));
+    const token = session.get('accessToken');
+    const userId = session.get('userId');
+    const clinicId = session.get('clinicId');
+    const res = await fetch(
+      `${APPT_API_URL}/availability?doctorId=${userId}&clinicId=${clinicId}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${token}`,
+        },
+        method: 'GET',
+      }
+    );
     if (!res.ok) {
       throw new Error(res.statusText);
     }
     const result = await res.json();
+
     return result;
   } catch (error) {
     return null;
   }
 };
-
 const Appt = () => {
   const data = useLoaderData<Availability>();
   const { monday, tuesday, wednesday, thursday, friday, saturday, sunday } =

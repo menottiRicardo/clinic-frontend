@@ -19,15 +19,12 @@ export const loader: LoaderFunction = async ({ request }) => {
       },
     });
 
-    if (!res.ok) {
-      throw new Error(res.statusText);
+    if (!res.ok || !token) {
+      console.log('sidebar', token);
+      return redirect('/auth/login');
     }
     const sidebar = await res.json();
 
-    if (!sidebar) {
-      console.log('redirecting to login', sidebar);
-      return redirect('/auth/login');
-    }
     return sidebar;
   } catch (error) {
     return null;
