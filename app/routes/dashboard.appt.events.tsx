@@ -1,17 +1,42 @@
 import type { LoaderFunction } from '@remix-run/node';
 import { Link, Outlet, useLoaderData } from '@remix-run/react';
-import React from 'react';
 import EventCard from '~/components/appt/event-card';
-import { getDoctorEvents } from '~/utils/api.server';
+import { getSession } from '~/sessions';
+import { APPT_API_URL } from '~/utils/constants';
 import type { Event } from '~/utils/types';
 
 export const loader: LoaderFunction = async ({ request }) => {
-  return await getDoctorEvents(request);
+  try {
+    const session = await getSession(request.headers.get('Cookie'));
+    const token = session.get('accessToken');
+    const userId = session.get('userId');
+    const clinicId = session.get('clinicId');
+    const role = session.get('role');
+
+    const shouldFetchSingleEvents = role === 'DOCTOR' || role === 'ADMIN';
+    const res = await fetch(
+      `${APPT_API_URL}/events?${
+        shouldFetchSingleEvents ? `doctorId=${userId}&` : ''
+      }clinicId=${clinicId}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (!res.ok) {
+      throw new Error(res.statusText);
+    }
+    return await res.json();
+  } catch (error) {
+    console.log('error', error);
+    return null;
+  }
 };
 
 const Appt = () => {
   const events: Event[] = useLoaderData();
-  console.log({ events });
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
       <Outlet />
@@ -54,6 +79,7 @@ const Appt = () => {
               description={event.description}
               duration={event.duration}
               _id={event._id}
+              doctorId={event.doctorId}
             />
           ))
         ) : (

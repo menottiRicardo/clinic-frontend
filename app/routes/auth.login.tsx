@@ -4,8 +4,8 @@ import { Form, Link, useActionData, useNavigation } from '@remix-run/react';
 import AuthHeader from '~/components/auth/auth-header';
 import AuthImage from '~/components/auth/auth-image';
 import Banner from '~/components/banner';
+import { commitSession, getSession } from '~/sessions';
 import { AUTH_API_URL } from '~/utils/constants';
-
 export const metadata = {
   title: 'Log In - School Board',
   description: 'Page description',
@@ -25,13 +25,17 @@ export async function action({ request }: ActionFunctionArgs) {
     });
 
     if (!res.ok) {
-      console.log('bad', res);
       return json({ error: true });
     }
     const data = await res.json();
+    const session = await getSession(request.headers.get('Cookie'));
+    session.set('accessToken', data.access_token);
+    session.set('userId', '6569382206ff6ea7855c76cc');
+    session.set('clinicId', '655c57e576c2c7421f4b3414');
+    session.set('role', 'ADMIN');
     return redirect('/dashboard', {
       headers: {
-        'Set-Cookie': `access_token=${data.access_token}; Max-Age=3600; HttpOnly; Path=/; Secure; SameSite=Lax`,
+        'Set-Cookie': await commitSession(session),
       },
     });
   } catch (error) {

@@ -40,7 +40,10 @@ export const daysInMonth = (date: Date | Dayjs) => {
 };
 
 export const to24Hour = (hour: string) => {
+  if (!hour) return '';
   const [time, ampm] = hour.split(' ');
   const [hours, minutes] = time.split(':');
+  // handle 12 PM and 12 AM
+  if (hours === '12') return ampm === 'PM' ? time : `00:${minutes}`;
   return ampm === 'PM' ? `${parseInt(hours) + 12}:${minutes}` : time;
 };

@@ -34,7 +34,7 @@ export interface Availability extends Days {
 
 export type DayKey = keyof Days;
 
-export const DAY_TO_NUMBER = {
+export const DAY_TO_NUMBER: DayToNumber = {
   sunday: 0,
   monday: 1,
   tuesday: 2,
@@ -43,6 +43,16 @@ export const DAY_TO_NUMBER = {
   friday: 5,
   saturday: 6,
 };
+
+export interface DayToNumber {
+  sunday: 0;
+  monday: 1;
+  tuesday: 2;
+  wednesday: 3;
+  thursday: 4;
+  friday: 5;
+  saturday: 6;
+}
 
 export const NUMBER_TO_DAY: NumberToDay = {
   0: 'sunday',
@@ -64,5 +74,5 @@ export interface NumberToDay {
   6: 'saturday';
 }
 
-export type DAY_TO_NUMBER_KEY = keyof DAY_TO_NUMBER;
+export type DAY_TO_NUMBER_KEY = keyof DayToNumber;
 export type NUMBER_TO_DAY_KEY = keyof NumberToDay;

@@ -1,14 +1,37 @@
 import { redirect, type LoaderFunction } from '@remix-run/node';
 import { useNavigate } from '@remix-run/react';
 import ModalBasic from '~/components/modal-basic';
-import { createEvent } from '~/utils/api.server';
+import { getSession } from '~/sessions';
+import { APPT_API_URL } from '~/utils/constants';
 
 export const action: LoaderFunction = async ({ request }) => {
   const formData = await request.formData();
   const event = Object.fromEntries(formData);
-  await createEvent(request, event as any);
-
-  return redirect('/dashboard/appt/events');
+  try {
+    const session = await getSession(request.headers.get('Cookie'));
+    const token = session.get('accessToken');
+    const userId = session.get('userId');
+    const clinicId = session.get('clinicId');
+    const res = await fetch(`${APPT_API_URL}/events`, {
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${token}`,
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        event,
+        doctorId: userId,
+        clinicId,
+      }),
+    });
+    if (!res.ok) {
+      throw new Error(res.statusText);
+    }
+    await res.json();
+    return redirect('/dashboard/appt/events');
+  } catch (error) {
+    return null;
+  }
 };
 const NewEvent = () => {
   const navigate = useNavigate();

@@ -14,7 +14,9 @@ import { useMemo, useState } from 'react';
 import DatePicker from '~/components/date-picker';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter.js';
 import { to24Hour } from '~/utils/weekday';
+dayjs.extend(isSameOrAfter);
 export const loader: LoaderFunction = async ({ request, params }) => {
   const doctorId = params.doctorId;
   try {
@@ -55,6 +57,7 @@ const DoctorSchedule = () => {
   const { events, doctor, daysOff, availability } = useLoaderData<LoaderData>();
   const [selectedEvent, setSelectedEvent] = useState<EventType | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>();
+  const [selectedTime, setSelectedTime] = useState<string | null>();
   const [month, setMonth] = useState<string | null>();
   //   console.log({ events, doctor, daysOff, availability });
 
@@ -83,14 +86,28 @@ const DoctorSchedule = () => {
         )
       )
       .minute(0);
-    // date = date.set('hour', parseInt(to24Hour(dayAvailability.hours[0].start)));
 
+    const intervalStart =
+      date.hour(parseInt(to24Hour(dayAvailability?.hours[0]?.end))).minute(0) ??
+      null;
+
+    const intervalEnd =
+      date
+        .hour(parseInt(to24Hour(dayAvailability?.hours[1]?.start)))
+        .minute(0) ?? null;
+
+    const hasInterval = intervalStart && !isNaN(intervalEnd.day());
     let time = start;
     while (time.isBefore(end)) {
+      if (hasInterval) {
+        if (time.isSameOrAfter(intervalStart) && time.isBefore(intervalEnd)) {
+          time = time.add(parseInt(duration), 'minute');
+          continue;
+        }
+      }
       times.push(time.format('hh:mm A'));
       time = time.add(parseInt(duration), 'minute');
     }
-    console.log('day', start, end, times);
 
     return times;
   }, [selectedEvent, selectedDate]);
@@ -163,7 +180,27 @@ const DoctorSchedule = () => {
         </div>
 
         {/* times */}
-        <div className="max-h-72 overflow-y-scroll space-y-2 mt-8 pb-8"></div>
+        <div className="max-h-72 overflow-y-scroll space-y-2 mt-8 pb-8">
+          {times.map((time) => (
+            <button
+              key={time}
+              onClick={() => setSelectedTime(time)}
+              className={classNames(
+                `shadow-lg w-full rounded-md border px-4 py-3 bg-white dark:bg-slate-800 transition-colors duration-200 ease-in-out cursor-auto`,
+                {
+                  'bg-slate-100 dark:bg-slate-600 border-white dark:border-slate-100 shadow-md':
+                    selectedTime === time,
+                  'border-slate-200 dark:border-slate-700':
+                    selectedTime !== time,
+                }
+              )}
+            >
+              <h2 className="font-semibold text-slate-800 dark:text-slate-100 text-center">
+                {time}
+              </h2>
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

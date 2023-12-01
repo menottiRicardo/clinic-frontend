@@ -1,21 +1,37 @@
-import type { LoaderFunction} from '@remix-run/node';
+import type { LoaderFunction } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { Outlet, useLoaderData } from '@remix-run/react';
 import Header from '~/components/header';
 import Sidebar from '~/components/sidebar';
-import { getUserSidebar } from '~/utils/api.server';
+import { getSession } from '~/sessions';
 import AppProvider from '~/utils/app-provider';
+import { AUTH_API_URL } from '~/utils/constants';
 import type { UserSidebarLink } from '~/utils/types';
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const sidebar = await getUserSidebar(request);
+  try {
+    const session = await getSession(request.headers.get('Cookie'));
+    const token = session.get('accessToken');
+    const res = await fetch(`${AUTH_API_URL}/users/sidebar`, {
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${token}`,
+      },
+    });
 
-  if (!sidebar) {
-    console.log('redirecting to login', sidebar);
-    return redirect('/auth/login');
+    if (!res.ok) {
+      throw new Error(res.statusText);
+    }
+    const sidebar = await res.json();
+
+    if (!sidebar) {
+      console.log('redirecting to login', sidebar);
+      return redirect('/auth/login');
+    }
+    return sidebar;
+  } catch (error) {
+    return null;
   }
-
-  return sidebar;
 };
 function Dashboard() {
   const sidebarLinks = useLoaderData<UserSidebarLink[]>();
