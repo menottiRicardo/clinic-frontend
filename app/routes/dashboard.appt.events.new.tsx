@@ -2,7 +2,7 @@ import { redirect, type LoaderFunction } from '@remix-run/node';
 import { useNavigate } from '@remix-run/react';
 import ModalBasic from '~/components/modal-basic';
 import { getSession } from '~/sessions';
-import { APPT_API_URL } from '~/utils/constants';
+import { API_URL } from '~/utils/constants';
 
 export const action: LoaderFunction = async ({ request }) => {
   const formData = await request.formData();
@@ -12,7 +12,7 @@ export const action: LoaderFunction = async ({ request }) => {
     const token = session.get('accessToken');
     const userId = session.get('userId');
     const clinicId = session.get('clinicId');
-    const res = await fetch(`${APPT_API_URL}/events`, {
+    const res = await fetch(`${API_URL}/events`, {
       headers: {
         'Content-Type': 'application/json',
         authorization: `Bearer ${token}`,

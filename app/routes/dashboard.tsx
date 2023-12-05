@@ -5,14 +5,14 @@ import Header from '~/components/header';
 import Sidebar from '~/components/sidebar';
 import { getSession } from '~/sessions';
 import AppProvider from '~/utils/app-provider';
-import { AUTH_API_URL } from '~/utils/constants';
+import { API_URL } from '~/utils/constants';
 import type { UserSidebarLink } from '~/utils/types';
 
 export const loader: LoaderFunction = async ({ request }) => {
   try {
     const session = await getSession(request.headers.get('Cookie'));
     const token = session.get('accessToken');
-    const res = await fetch(`${AUTH_API_URL}/users/sidebar`, {
+    const res = await fetch(`${API_URL}/auth/users/sidebar`, {
       headers: {
         'Content-Type': 'application/json',
         authorization: `Bearer ${token}`,

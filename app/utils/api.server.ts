@@ -1,9 +1,9 @@
-import { APPT_API_URL, AUTH_API_URL } from './constants';
+import { API_URL } from './constants';
 import type { Event } from './types';
 
 export const getUserSidebar = async (request: Request) => {
   try {
-    const res = await fetch(`${AUTH_API_URL}/users/sidebar`, {
+    const res = await fetch(`${API_URL}/auth/users/sidebar`, {
       headers: {
         'Content-Type': 'application/json',
         Cookie: request.headers.get('Cookie') || '',
@@ -27,7 +27,7 @@ export const changeVisibility = async (
   value: boolean
 ) => {
   try {
-    const res = await fetch(`${AUTH_API_URL}/users/sidebar`, {
+    const res = await fetch(`${API_URL}/auth/users/sidebar`, {
       headers: {
         'Content-Type': 'application/json',
         Cookie: request.headers.get('Cookie') || '',
@@ -47,7 +47,7 @@ export const changeVisibility = async (
 
 export const getDoctorEvents = async (request: Request) => {
   try {
-    const res = await fetch(`${APPT_API_URL}/events`, {
+    const res = await fetch(`${API_URL}/appt/events`, {
       headers: {
         'Content-Type': 'application/json',
         Cookie: request.headers.get('Cookie') || '',
@@ -67,7 +67,7 @@ export const getDoctorEvents = async (request: Request) => {
 
 export const createEvent = async (request: Request, eventBody: Event) => {
   try {
-    const res = await fetch(`${APPT_API_URL}/events`, {
+    const res = await fetch(`${API_URL}/appt/events`, {
       headers: {
         'Content-Type': 'application/json',
         Cookie: request.headers.get('Cookie') || '',

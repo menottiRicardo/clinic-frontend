@@ -1,7 +1,7 @@
 import type { LoaderFunction } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClockIcon, UserCircleIcon } from 'lucide-react';
-import { APPT_API_URL } from '~/utils/constants';
+import { API_URL } from '~/utils/constants';
 import { NUMBER_TO_DAY } from '~/utils/types';
 import type {
   Appointment,
@@ -22,7 +22,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const { doctorId, clinicId } = params;
   try {
     const res = await fetch(
-      `${APPT_API_URL}/appointments/schedule?doctorId=${doctorId}&clinicId=${clinicId}`,
+      `${API_URL}/appt/appointments/schedule?doctorId=${doctorId}&clinicId=${clinicId}`,
       {
         headers: {
           'Content-Type': 'application/json',

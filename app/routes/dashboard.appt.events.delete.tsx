@@ -2,7 +2,7 @@ import { redirect, type LoaderFunction } from '@remix-run/node';
 import { useNavigate } from '@remix-run/react';
 import ActionModal from '~/components/action-modal';
 import { getSession } from '~/sessions';
-import { APPT_API_URL } from '~/utils/constants';
+import { API_URL } from '~/utils/constants';
 
 export const action: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
@@ -10,7 +10,7 @@ export const action: LoaderFunction = async ({ request }) => {
   try {
     const session = await getSession(request.headers.get('Cookie'));
     const token = session.get('accessToken');
-    const res = await fetch(`${APPT_API_URL}/events/${id}/`, {
+    const res = await fetch(`${API_URL}/appt/events/${id}/`, {
       headers: {
         'Content-Type': 'application/json',
         authorization: `Bearer ${token}`,

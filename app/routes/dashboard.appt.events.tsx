@@ -2,7 +2,7 @@ import type { LoaderFunction } from '@remix-run/node';
 import { Link, Outlet, useLoaderData } from '@remix-run/react';
 import EventCard from '~/components/appt/event-card';
 import { getSession } from '~/sessions';
-import { APPT_API_URL } from '~/utils/constants';
+import { API_URL } from '~/utils/constants';
 import type { Event } from '~/utils/types';
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -15,7 +15,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
     const shouldFetchSingleEvents = role === 'DOCTOR' || role === 'ADMIN';
     const res = await fetch(
-      `${APPT_API_URL}/events?${
+      `${API_URL}/appt/events?${
         shouldFetchSingleEvents ? `doctorId=${userId}&` : ''
       }clinicId=${clinicId}`,
       {

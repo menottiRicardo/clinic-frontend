@@ -105,4 +105,3 @@ export const timeSince = (date: string): string => {
   }
   return `Hace ${Math.floor(seconds)} segundos`;
 };
-export const API_URL = 'http://localhost:3001';

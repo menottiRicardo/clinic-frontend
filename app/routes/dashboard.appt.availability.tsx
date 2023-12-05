@@ -12,7 +12,7 @@ import { Fragment, useState } from 'react';
 
 import ToggleSwitch from '~/components/toggle-switch';
 import { Listbox, Transition } from '@headlessui/react';
-import { APPT_API_URL } from '~/utils/constants';
+import { API_URL } from '~/utils/constants';
 import type { Availability, DayKey, Days } from '~/utils/types';
 import { getSession } from '~/sessions';
 
@@ -26,7 +26,7 @@ export async function action({ request }: { request: Request }) {
     const clinicId = session.get('clinicId');
 
     console.log('data', data.tuesday.hours, data.tuesday);
-    const res = await fetch(`${APPT_API_URL}/availability`, {
+    const res = await fetch(`${API_URL}/appt/availability`, {
       headers: {
         'Content-Type': 'application/json',
         authorization: `Bearer ${token}`,
@@ -55,7 +55,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     const userId = session.get('userId');
     const clinicId = session.get('clinicId');
     const res = await fetch(
-      `${APPT_API_URL}/availability?doctorId=${userId}&clinicId=${clinicId}`,
+      `${API_URL}/appt/availability?doctorId=${userId}&clinicId=${clinicId}`,
       {
         headers: {
           'Content-Type': 'application/json',
