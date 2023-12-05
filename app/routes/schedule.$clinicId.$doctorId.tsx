@@ -4,6 +4,7 @@ import { ClockIcon, UserCircleIcon } from 'lucide-react';
 import { APPT_API_URL } from '~/utils/constants';
 import { NUMBER_TO_DAY } from '~/utils/types';
 import type {
+  Appointment,
   Availability,
   DayKey,
   Event as EventType,
@@ -18,25 +19,23 @@ import isSameOrAfter from 'dayjs/plugin/isSameOrAfter.js';
 import { to24Hour } from '~/utils/weekday';
 dayjs.extend(isSameOrAfter);
 export const loader: LoaderFunction = async ({ request, params }) => {
-  const doctorId = params.doctorId;
+  const { doctorId, clinicId } = params;
   try {
     const res = await fetch(
-      `${APPT_API_URL}/appointments/schedule/${doctorId}`,
+      `${APPT_API_URL}/appointments/schedule?doctorId=${doctorId}&clinicId=${clinicId}`,
       {
         headers: {
           'Content-Type': 'application/json',
-          Cookie: request.headers.get('Cookie') || '',
         },
       }
     );
     if (!res.ok) {
-      console.log('ba', res);
       throw new Error(res.statusText);
     }
     const data = await res.json();
-
     return data;
   } catch (error) {
+    console.error(error);
     return null;
   }
 };
@@ -51,15 +50,17 @@ type LoaderData = {
   };
   daysOff: number[];
   availability: Availability;
+  appointments: Appointment[];
 };
 
 const DoctorSchedule = () => {
-  const { events, doctor, daysOff, availability } = useLoaderData<LoaderData>();
+  const { events, doctor, daysOff, availability, appointments } =
+    useLoaderData<LoaderData>();
   const [selectedEvent, setSelectedEvent] = useState<EventType | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>();
   const [selectedTime, setSelectedTime] = useState<string | null>();
   const [month, setMonth] = useState<string | null>();
-  //   console.log({ events, doctor, daysOff, availability });
+  console.log({ events, doctor, daysOff, availability, appointments });
 
   const times = useMemo(() => {
     if (!selectedEvent) return [];
@@ -105,7 +106,17 @@ const DoctorSchedule = () => {
           continue;
         }
       }
-      times.push(time.format('hh:mm A'));
+      // Check if the current time is within any of the appointment times
+      if (
+        !appointments.some(
+          (appt) =>
+            time.isSameOrAfter(appt.startDate) && time.isBefore(appt.endDate)
+        )
+      ) {
+        times.push(time.format('hh:mm A'));
+      }
+
+      // times.push(time.format('hh:mm A'));
       time = time.add(parseInt(duration), 'minute');
     }
 

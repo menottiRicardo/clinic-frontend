@@ -390,7 +390,7 @@ const Appt = () => {
       <div className="space-y-1 bg-slate-50 dark:bg-slate-800 px-3 py-2 rounded-lg">
         {Object.keys(days).map((day) => (
           <div
-            className="flex flex-col md:flex-row gap-2 items-center"
+            className="flex flex-col md:flex-row gap-2 items-center border-t py-2 dark:border-slate-700 border-dashed"
             key={day}
           >
             <div className="flex items-center w-36">

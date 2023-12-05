@@ -76,3 +76,13 @@ export interface NumberToDay {
 
 export type DAY_TO_NUMBER_KEY = keyof DayToNumber;
 export type NUMBER_TO_DAY_KEY = keyof NumberToDay;
+
+
+export interface Appointment {
+  _id: string;
+  patientId: string;
+  doctorId: string;
+  clinicId: string;
+  startDate: string;
+  endDate: string;
+}
