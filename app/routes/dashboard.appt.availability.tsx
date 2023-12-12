@@ -26,7 +26,7 @@ export async function action({ request }: { request: Request }) {
     const clinicId = session.get('clinicId');
 
     console.log('data', data.tuesday.hours, data.tuesday);
-    const res = await fetch(`${API_URL}/appt/availability`, {
+    const res = await fetch(`${API_URL}/appointment/availability`, {
       headers: {
         'Content-Type': 'application/json',
         authorization: `Bearer ${token}`,
@@ -55,7 +55,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     const userId = session.get('userId');
     const clinicId = session.get('clinicId');
     const res = await fetch(
-      `${API_URL}/appt/availability?doctorId=${userId}&clinicId=${clinicId}`,
+      `${API_URL}/appointment/availability?doctorId=${userId}&clinicId=${clinicId}`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -390,7 +390,7 @@ const Appt = () => {
       <div className="space-y-1 bg-slate-50 dark:bg-slate-800 px-3 py-2 rounded-lg">
         {Object.keys(days).map((day) => (
           <div
-            className="flex flex-col md:flex-row gap-2 items-center border-t py-2 dark:border-slate-700 border-dashed"
+            className="flex flex-col md:flex-row gap-2 items-center first:border-none border-t py-2 dark:border-slate-700 border-dashed"
             key={day}
           >
             <div className="flex items-center w-36">

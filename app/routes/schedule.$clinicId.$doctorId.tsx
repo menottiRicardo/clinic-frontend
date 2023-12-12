@@ -22,7 +22,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const { doctorId, clinicId } = params;
   try {
     const res = await fetch(
-      `${API_URL}/appt/appointments/schedule?doctorId=${doctorId}&clinicId=${clinicId}`,
+      `${API_URL}/appointment/appointments/schedule?doctorId=${doctorId}&clinicId=${clinicId}`,
       {
         headers: {
           'Content-Type': 'application/json',

@@ -10,7 +10,7 @@ export const action: LoaderFunction = async ({ request }) => {
   try {
     const session = await getSession(request.headers.get('Cookie'));
     const token = session.get('accessToken');
-    const res = await fetch(`${API_URL}/appt/events/${id}/`, {
+    const res = await fetch(`${API_URL}/appointment/events/${id}/`, {
       headers: {
         'Content-Type': 'application/json',
         authorization: `Bearer ${token}`,

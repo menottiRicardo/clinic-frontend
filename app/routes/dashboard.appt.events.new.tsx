@@ -12,7 +12,7 @@ export const action: LoaderFunction = async ({ request }) => {
     const token = session.get('accessToken');
     const userId = session.get('userId');
     const clinicId = session.get('clinicId');
-    const res = await fetch(`${API_URL}/events`, {
+    const res = await fetch(`${API_URL}/appointment/events`, {
       headers: {
         'Content-Type': 'application/json',
         authorization: `Bearer ${token}`,

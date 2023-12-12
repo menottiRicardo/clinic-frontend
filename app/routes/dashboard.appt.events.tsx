@@ -15,7 +15,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
     const shouldFetchSingleEvents = role === 'DOCTOR' || role === 'ADMIN';
     const res = await fetch(
-      `${API_URL}/appt/events?${
+      `${API_URL}/appointment/events?${
         shouldFetchSingleEvents ? `doctorId=${userId}&` : ''
       }clinicId=${clinicId}`,
       {
@@ -28,6 +28,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     if (!res.ok) {
       throw new Error(res.statusText);
     }
+    console.log('res', res);
     return await res.json();
   } catch (error) {
     console.log('error', error);
