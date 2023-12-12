@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import isToday from 'dayjs/plugin/isToday.js';
-import classNames from 'classNames';
+import classNames from 'classnames';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { daysInMonth, weekdayNames, yyyymmdd } from '~/utils/weekday';
 import { getAvailableDatesInMonth } from '~/utils/getAvailableDatesInMonth';
