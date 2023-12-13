@@ -13,6 +13,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     const clinicId = session.get('clinicId');
     const role = session.get('role');
 
+    console.log('clinicId', clinicId, token, userId, role);
     const shouldFetchSingleEvents = role === 'DOCTOR' || role === 'ADMIN';
     const res = await fetch(
       `${API_URL}/appointment/events?${
@@ -26,6 +27,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       }
     );
     if (!res.ok) {
+      console.log(' bad res', res);
       throw new Error(res.statusText);
     }
     console.log('res', res);
