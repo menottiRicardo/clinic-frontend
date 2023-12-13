@@ -1,5 +1,5 @@
 import type { LoaderFunction } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { Link, Outlet, useLoaderData } from '@remix-run/react';
 import { ClockIcon, UserCircleIcon } from 'lucide-react';
 import { API_URL } from '~/utils/constants';
 import { NUMBER_TO_DAY } from '~/utils/types';
@@ -60,7 +60,6 @@ const DoctorSchedule = () => {
   const [selectedDate, setSelectedDate] = useState<string | null>();
   const [selectedTime, setSelectedTime] = useState<string | null>();
   const [month, setMonth] = useState<string | null>();
-  console.log({ events, doctor, daysOff, availability, appointments });
 
   const times = useMemo(() => {
     if (!selectedEvent) return [];
@@ -125,6 +124,7 @@ const DoctorSchedule = () => {
 
   return (
     <div className="w-full h-screen flex justify-center items-center">
+      <Outlet />
       <div className="md:bg-white md:dark:bg-slate-700 p-3 rounded-md md:border md:border-slate-500 shadow-sm w-full md:w-3/5 h-full">
         {/* doc */}
         <div className="flex items-center gap-3">
@@ -191,25 +191,28 @@ const DoctorSchedule = () => {
         </div>
 
         {/* times */}
-        <div className="max-h-72 overflow-y-scroll space-y-2 mt-8 pb-8">
+        <div className="max-h-72 overflow-y-scroll mt-8 pb-8">
           {times.map((time) => (
-            <button
+            <Link
               key={time}
-              onClick={() => setSelectedTime(time)}
-              className={classNames(
-                `shadow-lg w-full rounded-md border px-4 py-3 bg-white dark:bg-slate-800 transition-colors duration-200 ease-in-out cursor-auto`,
-                {
-                  'bg-slate-100 dark:bg-slate-600 border-white dark:border-slate-100 shadow-md':
-                    selectedTime === time,
-                  'border-slate-200 dark:border-slate-700':
-                    selectedTime !== time,
-                }
-              )}
+              to={`new?event=${selectedEvent?._id}&time=${time}`}
             >
-              <h2 className="font-semibold text-slate-800 dark:text-slate-100 text-center">
-                {time}
-              </h2>
-            </button>
+              <div
+                className={classNames(
+                  `shadow-lg w-full rounded-md border px-4 py-3 my-2 bg-white dark:bg-slate-800 transition-colors duration-200 ease-in-out cursor-auto`,
+                  {
+                    'bg-slate-100 dark:bg-slate-600 border-white dark:border-slate-100 shadow-md':
+                      selectedTime === time,
+                    'border-slate-200 dark:border-slate-700':
+                      selectedTime !== time,
+                  }
+                )}
+              >
+                <h2 className="font-semibold text-slate-800 dark:text-slate-100 text-center">
+                  {time}
+                </h2>
+              </div>
+            </Link>
           ))}
         </div>
       </div>

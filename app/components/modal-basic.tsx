@@ -17,7 +17,7 @@ export default function ModalBasic({
     <Transition appear show={isOpen}>
       <Dialog as="div" onClose={setIsOpen}>
         <Transition.Child
-          className="fixed inset-0 bg-slate-900 bg-opacity-30 z-50 transition-opacity"
+          className="fixed inset-0 bg-slate-900 bg-opacity-80 z-50 transition-opacity"
           enter="transition ease-out duration-200"
           enterFrom="opacity-0"
           enterTo="opacity-100"
